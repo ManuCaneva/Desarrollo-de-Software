@@ -138,3 +138,10 @@ class PrefContieneTodas(Preferencia):
 
     def satisface(self, noticia: Noticia) -> bool:
         return noticia.cuerpo.contieneTodas(self.palabras)
+    
+class PrefMaxPalabras(Preferencia):
+    def __init__(self, max_palabras: int):
+        self.max_palabras = max_palabras
+
+    def satisface(self, noticia: Noticia) -> bool:
+        return noticia.conteoPalabras() <= self.max_palabras
