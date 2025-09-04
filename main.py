@@ -85,7 +85,8 @@ class Usuario:
 class Suscripcion:
     total_subs = 0
 
-    def __init__(self, usuario, )
+    def __init__(self, usuario, ):
+        pass
 
     @class_method
     def incrementar_id(cls):
