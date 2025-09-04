@@ -98,8 +98,8 @@ class Suscripcion:
         self.__class__.incremental_id()
 
     def aplicaANoticia(self, noticia: Noticia):
-        for pref in self.filtros:
-            if pref.satisface(noticia):
+        for filtro in self.filtros:
+            if filtro.satisfechoPor(noticia):
                 return True
         return False
 
@@ -109,42 +109,42 @@ class Suscripcion:
 
 class Filtro(ABC):
     @abstractmethod
-    def satisface(self, noticia: Noticia) -> bool:
+    def satisfechoPor(self, noticia: Noticia) -> bool:
         pass
 
 class FiltroCategoria(Filtro):
     def __init__(self, categoria):
         self.categoria = categoria
 
-    def satisface(self, noticia: Noticia) -> bool:
+    def satisfechoPor(self, noticia: Noticia) -> bool:
         return noticia.categoria == self.categoria
 
 class FiltroTitulo(Filtro):
     def __init__(self, frase: str):
         self.frase = frase
 
-    def satisface(self, noticia: Noticia) -> bool:
+    def satisfechoPor(self, noticia: Noticia) -> bool:
         return self.frase == noticia.titulo
 
 class FiltroPalabraClave(Filtro):
     def __init__(self, palabra: str):
         self.palabra = palabra
 
-    def satisface(self, noticia: Noticia) -> bool:
+    def satisfechoPor(self, noticia: Noticia) -> bool:
         return noticia.cuerpo.contienePalabra(self.palabra)
     
 class FiltroContieneTodas(Filtro):
     def __init__(self, palabras: list[str]):
         self.palabras = palabras
 
-    def satisface(self, noticia: Noticia) -> bool:
+    def satisfechoPor(self, noticia: Noticia) -> bool:
         return noticia.cuerpo.contieneTodas(self.palabras)
     
 class FiltroMaxPalabras(Filtro):
     def __init__(self, max_palabras: int):
         self.max_palabras = max_palabras
 
-    def satisface(self, noticia: Noticia) -> bool:
+    def satisfechoPor(self, noticia: Noticia) -> bool:
         return noticia.conteoPalabras() <= self.max_palabras
     
 class YFiltro(Filtro):
@@ -153,5 +153,5 @@ class YFiltro(Filtro):
         self.filtros = filtros
 
     #el all() devuelve true si todos los valores son true
-    def satisface(self, noticia: Noticia) -> bool:
-        return all(p.satisface(noticia) for p in self.filtros)
+    def satisfechoPor(self, noticia: Noticia) -> bool:
+        return all(p.satisfechoPor(noticia) for p in self.filtros)
