@@ -10,3 +10,7 @@ class Noticia:
     def conteoPalabras(self):
         #cuenta algo qsy
         return None
+
+class Usuario:
+    def __init__(self, nombre):
+        self.nombre = nombre
