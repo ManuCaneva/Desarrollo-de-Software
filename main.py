@@ -16,7 +16,7 @@ class Noticia:
         self.titulo = titulo
         self.categoria = categoria
         self.cuerpo = cuerpo
-        self.fechaPublicación = fechaPublicacion
+        self.fechaPublicacion = fechaPublicacion
 
     def conteoPalabras(self):
         #devuelve la cantidad de palabras en el cuerpo de la noticia
@@ -27,24 +27,27 @@ class Cuerpo:
         self.elementos = elementos
     
     def contienePalabra(self, p: str) -> bool:
-        for e in self.elementos:
+      """  for e in self.elementos:
             if p in e.textoExtraible():
                 return True
-        return False
+        return False"""
+      return any(p.lower() in e.textoExtraible().lower() for e in self.elementos)  # ✅ CAMBIO: más compacto y seguro
 
     def contieneTodas(self, ps: list[str]) -> bool:
-        for e in self.elementos:
+        """for e in self.elementos:
             texto = e.textoExtraible()
             for p in ps:
                 if p in texto:
                     ps.remove(p)
-        return not ps
+        return not ps"""""
+        return all(self.contienePalabra(p) for p in ps)  # ✅ CAMBIO: evitamos modificar la lista original
     
     def conteoPalabras(self) -> int:
-        palabras = 0
+        """palabras = 0
         for e in self.elementos:
             palabras = len(e.textoExtraible().split())
-        return palabras
+        return palabras"""
+        return sum(len(e.textoExtraible().split()) for e in self.elementos)  # ✅ CAMBIO: ahora acumula correctamente
 
 class Contenido(ABC):
     @abstractmethod
@@ -79,7 +82,7 @@ class Video(Contenido):
         return self.descripcion
 
 class Usuario:
-    contador_id = 0
+    """contador_id = 0
 
     def __init__(self, nombre):
         self.id = self.__class__.id
@@ -93,18 +96,34 @@ class Usuario:
 
     @classmethod
     def incrementarId(cls):
-        cls.id += 1
+        cls.id += 1"""
+    contador_id = 0  # ✅ CAMBIO: renombrado, antes usabas "id" como variable de clase
+
+    def __init__(self, nombre):
+        Usuario.contador_id += 1          # ✅ CAMBIO: incrementamos primero
+        self.id = Usuario.contador_id     # ✅ CAMBIO: asignamos después
+        self.nombre = nombre
+        self.suscripciones = []
+        
+    def agregarSuscripcion(self, suscripcion):
+        self.suscripciones.append(suscripcion)
+        if self not in suscripcion.usuarios:      # ✅ CAMBIO: mantenemos bidireccionalidad
+            suscripcion.usuarios.append(self)
+
 
 class Suscripcion:
     def __init__(self, usuarios, filtros):
-        self.usuarios = usuarios
+        """self.usuarios = usuarios""" 
+        self.usuarios = []   # ✅ CAMBIO: siempre empieza vacío 
         self.filtros = filtros
 
     def aplicaANoticia(self, noticia: Noticia):
-        for filtro in self.filtros:
+       """ for filtro in self.filtros:
             if filtro.satisfechoPor(noticia):
                 return True
-        return False
+        return False"""
+       return all(f.satisfechoPor(noticia) for f in self.filtros)  # ✅ CAMBIO: antes era OR, ahora es AND
+
 
 class Filtro(ABC):
     @abstractmethod
@@ -170,10 +189,29 @@ class NoFiltro(Filtro):
         return not self.filtro.satisfechoPor(noticia)
 
 class ServidorNoticias:
-    def __init__(self, usuarios=[], noticias=[], suscripciones=[]):
+    """ def __init__(self, usuarios=[], noticias=[], suscripciones=[]):
         self.usuarios = usuarios
         self.noticias = noticias
-        self.suscripciones = suscripciones
+        self.suscripciones = suscripciones"""
+    def __init__(self):  # ✅ CAMBIO: evitamos listas mutables en parámetros
+        self.usuarios = []
+        self.noticias = []
+        self.suscripciones = []
+
 
     def nuevoUsuario(self, nombre):
-        self.usuarios.append(Usuario(nombre))
+        """self.usuarios.append(Usuario(nombre))"""
+        u = Usuario(nombre)  # ✅ CAMBIO: ahora devuelve el usuario creado
+        self.usuarios.append(u)
+        return u
+#agregado por chat creo:
+    def agregarSuscripcion(self, suscripcion):
+        self.suscripciones.append(suscripcion)
+
+    def publicarNoticia(self, noticia: Noticia):  # ✅ CAMBIO: nuevo método
+        self.noticias.append(noticia)
+        print(f"\nNueva noticia publicada: {noticia.titulo}")
+        for s in self.suscripciones:
+            if s.aplicaANoticia(noticia):
+                for u in s.usuarios:
+                    print(f"[{u.nombre}] recibió la noticia: {noticia.titulo}")
