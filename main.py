@@ -31,7 +31,7 @@ class Cuerpo:
             if p in e.textoExtraible():
                 return True
         return False"""
-      return any(p.lower() in e.textoExtraible().lower() for e in self.elementos)  # ✅ CAMBIO: más compacto y seguro
+      return any(p.lower() in e.textoExtraible().lower() for e in self.elementos) 
 
     def contieneTodas(self, ps: list[str]) -> bool:
         """for e in self.elementos:
@@ -40,14 +40,14 @@ class Cuerpo:
                 if p in texto:
                     ps.remove(p)
         return not ps"""""
-        return all(self.contienePalabra(p) for p in ps)  # ✅ CAMBIO: evitamos modificar la lista original
+        return all(self.contienePalabra(p) for p in ps) 
     
     def conteoPalabras(self) -> int:
         """palabras = 0
         for e in self.elementos:
             palabras = len(e.textoExtraible().split())
         return palabras"""
-        return sum(len(e.textoExtraible().split()) for e in self.elementos)  # ✅ CAMBIO: ahora acumula correctamente
+        return sum(len(e.textoExtraible().split()) for e in self.elementos) 
 
 class Contenido(ABC):
     @abstractmethod
@@ -97,24 +97,24 @@ class Usuario:
     @classmethod
     def incrementarId(cls):
         cls.id += 1"""
-    contador_id = 0  # ✅ CAMBIO: renombrado, antes usabas "id" como variable de clase
+    contador_id = 0 
 
     def __init__(self, nombre):
-        Usuario.contador_id += 1          # ✅ CAMBIO: incrementamos primero
-        self.id = Usuario.contador_id     # ✅ CAMBIO: asignamos después
+        Usuario.contador_id += 1    
+        self.id = Usuario.contador_id
         self.nombre = nombre
         self.suscripciones = []
         
     def agregarSuscripcion(self, suscripcion):
         self.suscripciones.append(suscripcion)
-        if self not in suscripcion.usuarios:      # ✅ CAMBIO: mantenemos bidireccionalidad
+        if self not in suscripcion.usuarios:  
             suscripcion.usuarios.append(self)
 
 
 class Suscripcion:
     def __init__(self, usuarios, filtros):
         """self.usuarios = usuarios""" 
-        self.usuarios = []   # ✅ CAMBIO: siempre empieza vacío 
+        self.usuarios = []
         self.filtros = filtros
 
     def aplicaANoticia(self, noticia: Noticia):
@@ -122,7 +122,7 @@ class Suscripcion:
             if filtro.satisfechoPor(noticia):
                 return True
         return False"""
-       return all(f.satisfechoPor(noticia) for f in self.filtros)  # ✅ CAMBIO: antes era OR, ahora es AND
+       return all(f.satisfechoPor(noticia) for f in self.filtros)
 
 
 class Filtro(ABC):
@@ -193,7 +193,7 @@ class ServidorNoticias:
         self.usuarios = usuarios
         self.noticias = noticias
         self.suscripciones = suscripciones"""
-    def __init__(self):  # ✅ CAMBIO: evitamos listas mutables en parámetros
+    def __init__(self):
         self.usuarios = []
         self.noticias = []
         self.suscripciones = []
@@ -201,14 +201,14 @@ class ServidorNoticias:
 
     def nuevoUsuario(self, nombre):
         """self.usuarios.append(Usuario(nombre))"""
-        u = Usuario(nombre)  # ✅ CAMBIO: ahora devuelve el usuario creado
+        u = Usuario(nombre)  
         self.usuarios.append(u)
         return u
 #agregado por chat creo:
     def agregarSuscripcion(self, suscripcion):
         self.suscripciones.append(suscripcion)
 
-    def publicarNoticia(self, noticia: Noticia):  # ✅ CAMBIO: nuevo método
+    def publicarNoticia(self, noticia: Noticia):
         self.noticias.append(noticia)
         print(f"\nNueva noticia publicada: {noticia.titulo}")
         for s in self.suscripciones:
