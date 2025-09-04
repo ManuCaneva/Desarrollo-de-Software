@@ -76,8 +76,11 @@ class Video(Contenido):
         return self.descripcion
 
 class Usuario:
-    def __init__(self, nombre):
+    def __init__(self, id, nombre):
+        self.id = id
         self.nombre = nombre
+        self.subscripciones = []
+        
 
 class Preferencia(ABC):
     @abstractmethod
