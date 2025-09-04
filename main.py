@@ -155,3 +155,8 @@ class YFiltro(Filtro):
     #el all() devuelve true si todos los valores son true
     def satisfechoPor(self, noticia: Noticia) -> bool:
         return all(p.satisfechoPor(noticia) for p in self.filtros)
+
+class ServidorNoticias:
+    def __init__(self):
+        self.noticias = []
+        self.suscripciones = []
