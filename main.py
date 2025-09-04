@@ -160,3 +160,4 @@ class ServidorNoticias:
     def __init__(self):
         self.noticias = []
         self.suscripciones = []
+
