@@ -177,3 +177,6 @@ class ServidorNoticias:
 
     def nuevoUsuario(self, nombre):
         self.usuarios.append(Usuario(nombre))
+
+    def nuevaNoticia(self, noticia):
+        self.noticias.append(noticia)
