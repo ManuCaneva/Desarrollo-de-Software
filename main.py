@@ -163,6 +163,13 @@ class OFiltro(Filtro):
     def satisfechoPor(self, noticia: Noticia) -> bool:
         return any(p.satisfechoPor(noticia) for p in self.filtros)
 
+class NoFiltro(Filtro):
+    def __init__(self, filtro: Filtro):
+        self.filtros = filtro
+
+    def satisfechoPor(self, noticia: Noticia) -> bool:
+        return not p.satisfechoPor(noticia)
+
 class ServidorNoticias:
     def __init__(self, usuarios, noticias, suscripciones):
         self.usuarios = usuarios
