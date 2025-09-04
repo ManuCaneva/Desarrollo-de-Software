@@ -16,7 +16,7 @@ class Noticia:
         self.titulo = titulo
         self.categoria = categoria
         self.cuerpo = cuerpo
-        self.fechaPublicación = fechaPublicacion
+        self.fechaPublicacion = fechaPublicacion
 
     def conteoPalabras(self):
         #devuelve la cantidad de palabras en el cuerpo de la noticia
@@ -27,24 +27,27 @@ class Cuerpo:
         self.elementos = elementos
     
     def contienePalabra(self, p: str) -> bool:
-        for e in self.elementos:
+      """  for e in self.elementos:
             if p in e.textoExtraible():
                 return True
-        return False
+        return False"""
+      return any(p.lower() in e.textoExtraible().lower() for e in self.elementos) 
 
     def contieneTodas(self, ps: list[str]) -> bool:
-        for e in self.elementos:
+        """for e in self.elementos:
             texto = e.textoExtraible()
             for p in ps:
                 if p in texto:
                     ps.remove(p)
-        return not ps
+        return not ps"""""
+        return all(self.contienePalabra(p) for p in ps) 
     
     def conteoPalabras(self) -> int:
-        palabras = 0
+        """palabras = 0
         for e in self.elementos:
             palabras = len(e.textoExtraible().split())
-        return palabras
+        return palabras"""
+        return sum(len(e.textoExtraible().split()) for e in self.elementos) 
 
 class Contenido(ABC):
     @abstractmethod
@@ -79,7 +82,7 @@ class Video(Contenido):
         return self.descripcion
 
 class Usuario:
-    id = 0
+    """contador_id = 0
 
     def __init__(self, nombre):
         self.id = self.__class__.id
@@ -93,18 +96,34 @@ class Usuario:
 
     @classmethod
     def incrementarId(cls):
-        cls.id += 1
+        cls.id += 1"""
+    contador_id = 0 
+
+    def __init__(self, nombre):
+        Usuario.contador_id += 1    
+        self.id = Usuario.contador_id
+        self.nombre = nombre
+        self.suscripciones = []
+        
+    def agregarSuscripcion(self, suscripcion):
+        self.suscripciones.append(suscripcion)
+        if self not in suscripcion.usuarios:  
+            suscripcion.usuarios.append(self)
+
 
 class Suscripcion:
-    def __init__(self, usuarios, filtros):
-        self.usuarios = usuarios
+    def __init__(self, filtros):
+        """self.usuarios = usuarios""" 
+        self.usuarios = []
         self.filtros = filtros
 
     def aplicaANoticia(self, noticia: Noticia):
-        for filtro in self.filtros:
+       """ for filtro in self.filtros:
             if filtro.satisfechoPor(noticia):
                 return True
-        return False
+        return False"""
+       return all(f.satisfechoPor(noticia) for f in self.filtros)
+
 
 class Filtro(ABC):
     @abstractmethod
@@ -170,13 +189,108 @@ class NoFiltro(Filtro):
         return not self.filtro.satisfechoPor(noticia)
 
 class ServidorNoticias:
-    def __init__(self, usuarios=[], noticias=[], suscripciones=[]):
+    """ def __init__(self, usuarios=[], noticias=[], suscripciones=[]):
         self.usuarios = usuarios
         self.noticias = noticias
-        self.suscripciones = suscripciones
+        self.suscripciones = suscripciones"""
+    def __init__(self):
+        self.usuarios = []
+        self.noticias = []
+        self.suscripciones = []
+
 
     def nuevoUsuario(self, nombre):
-        self.usuarios.append(Usuario(nombre))
+        """self.usuarios.append(Usuario(nombre))"""
+        u = Usuario(nombre)  
+        self.usuarios.append(u)
+        return u
+#agregado por chat creo:
+    def agregarSuscripcion(self, suscripcion):
+        self.suscripciones.append(suscripcion)
 
-    def nuevaNoticia(self, noticia):
+    def publicarNoticia(self, noticia: Noticia):
         self.noticias.append(noticia)
+        print(f"\nNueva noticia publicada: {noticia.titulo}")
+        notificaciones_enviadas = False
+        for s in self.suscripciones:
+            if s.aplicaANoticia(noticia):
+                for u in s.usuarios:
+                    print(f"[Notificación para {u.nombre}] La noticia \"{noticia.titulo}\" coincide con tu suscripción.")
+                    notificaciones_enviadas = True
+        if not notificaciones_enviadas:
+            print("Ningún usuario suscrito recibió esta noticia.")
+
+
+if __name__ == "__main__":
+    # 1. Crear el servidor de noticias
+    servidor = ServidorNoticias()
+
+    # 2. Crear usuarios
+    user_juan = servidor.nuevoUsuario("Juan")
+    user_maria = servidor.nuevoUsuario("Maria")
+    user_pedro = servidor.nuevoUsuario("Pedro")
+
+    print("\n--- Usuarios Creados ---")
+    for u in servidor.usuarios:
+        print(f"ID: {u.id}, Nombre: {u.nombre}")
+
+    # 3. Definir filtros
+    filtro_deportes = FiltroCategoria(Categoria.DEPORTES)
+    filtro_chimentos = FiltroCategoria(Categoria.CHIMENTERO)
+    filtro_de_paul = FiltroPalabraClave("De Paul")
+    filtro_river_boca = FiltroContieneTodas(["River", "Boca"])
+    filtro_max_50_palabras = FiltroMaxPalabras(50)
+    filtro_no_economia = NoFiltro(FiltroCategoria(Categoria.ECONOMIA))
+    filtro_titulo_clima = FiltroTitulo("El Clima")
+
+    # 4. Crear suscripciones y asociarlas
+    suscripcion_juan_depaul = Suscripcion(filtros=[YFiltro([filtro_deportes, filtro_de_paul])])
+    user_juan.agregarSuscripcion(suscripcion_juan_depaul)
+    servidor.agregarSuscripcion(suscripcion_juan_depaul)
+
+    suscripcion_maria_futbol = Suscripcion(filtros=[YFiltro([OFiltro([filtro_river_boca, FiltroPalabraClave("fútbol")]), filtro_no_economia])])
+    user_maria.agregarSuscripcion(suscripcion_maria_futbol)
+    servidor.agregarSuscripcion(suscripcion_maria_futbol)
+
+    suscripcion_pedro_cortas = Suscripcion(filtros=[filtro_max_50_palabras])
+    user_pedro.agregarSuscripcion(suscripcion_pedro_cortas)
+    servidor.agregarSuscripcion(suscripcion_pedro_cortas)
+    
+    suscripcion_juan_farandula = Suscripcion(filtros=[OFiltro([FiltroCategoria(Categoria.ESPECTACULOS), FiltroCategoria(Categoria.CHIMENTERO)])])
+    user_juan.agregarSuscripcion(suscripcion_juan_farandula)
+    servidor.agregarSuscripcion(suscripcion_juan_farandula)
+
+    # ESTAS LÍNEAS DE IMPRESIÓN DEBEN ESTAR AQUÍ, Y SOLO AQUÍ:
+    print("\n--- Suscripciones Creadas y Asociadas ---")
+    print(f"Juan tiene {len(user_juan.suscripciones)} suscripciones.")
+    print(f"Maria tiene {len(user_maria.suscripciones)} suscripciones.")
+    print(f"Pedro tiene {len(user_pedro.suscripciones)} suscripciones.")
+
+    # 5. Publicar noticias y observar las notificaciones
+    cuerpo1 = Cuerpo([Texto("El jugador De Paul tuvo una destacada actuación en el partido de la selección de fútbol.")])
+    noticia1 = Noticia(1, "Gran partido de la Selección", Categoria.DEPORTES, cuerpo1, "2025-09-01")
+    servidor.publicarNoticia(noticia1)
+
+    cuerpo2 = Cuerpo([Texto("De Paul y su nueva pareja fueron vistos en un evento social, generando rumores.")])
+    noticia2 = Noticia(2, "De Paul en el ojo de la tormenta", Categoria.CHIMENTERO, cuerpo2, "2025-09-02")
+    servidor.publicarNoticia(noticia2)
+
+    cuerpo3 = Cuerpo([Texto("River y Boca empataron en un emocionante superclásico. El partido estuvo lleno de goles y polémica.")])
+    noticia3 = Noticia(3, "Superclásico vibrante: River y Boca no se sacaron ventajas", Categoria.DEPORTES, cuerpo3, "2025-09-03")
+    servidor.publicarNoticia(noticia3)
+
+    cuerpo4 = Cuerpo([Texto("La bolsa de valores tuvo una jornada agitada, con subas y bajas inesperadas.")])
+    noticia4 = Noticia(4, "Mercados en vilo por nueva política económica", Categoria.ECONOMIA, cuerpo4, "2025-09-04")
+    servidor.publicarNoticia(noticia4)
+
+    cuerpo5 = Cuerpo([Texto("Breve informe meteorológico. Se esperan lluvias fuertes para el fin de semana en la capital.")])
+    noticia5 = Noticia(5, "Pronóstico del tiempo", Categoria.SOCIALES, cuerpo5, "2025-09-05")
+    servidor.publicarNoticia(noticia5)
+
+    cuerpo6 = Cuerpo([Texto("La nueva película de ciencia ficción rompe récords de taquilla en su primer fin de semana de estreno.")])
+    noticia6 = Noticia(6, "Éxito rotundo en la taquilla", Categoria.ESPECTACULOS, cuerpo6, "2025-09-06")
+    servidor.publicarNoticia(noticia6)
+
+    cuerpo7 = Cuerpo([Texto("Este es un artículo muy largo sobre la historia de la programación orientada a objetos, abarcando muchísimos detalles, ejemplos y conceptos avanzados. La extensión de este texto supera ampliamente las cincuenta palabras, haciendo que no sea apto para suscripciones que busquen contenido conciso. Exploramos la evolución desde Smalltalk hasta los paradigmas modernos de Python y Java, sus ventajas y desventajas en el desarrollo de software. Analizamos patrones de diseño comunes, principios SOLID y la importancia de la abstracción y el encapsulamiento para construir sistemas robustos y mantenibles.")])
+    noticia7 = Noticia(7, "Un largo tratado de POO", Categoria.ECONOMIA, cuerpo7, "2025-09-07")
+    servidor.publicarNoticia(noticia7)
