@@ -162,7 +162,8 @@ class NoFiltro(Filtro):
         return not self.filtro.satisfechoPor(noticia)
 
 class ServidorNoticias:
-    def __init__(self, usuarios, noticias, suscripciones):
+    def __init__(self, usuarios=[], noticias=[], suscripciones=[]):
         self.usuarios = usuarios
         self.noticias = noticias
         self.suscripciones = suscripciones
+    
