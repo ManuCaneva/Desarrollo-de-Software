@@ -22,7 +22,7 @@ class Noticia:
         #devuelve la cantidad de palabras en el cuerpo de la noticia
         return self.cuerpo.conteoPalabras()
 
-Class Cuerpo:
+class Cuerpo:
     def __init__(self, elementos):
         self.elementos = elementos
     
@@ -31,6 +31,7 @@ Class Cuerpo:
             if p in e.textoExtraible():
                 return True
         return False
+
 
     def contieneTodas(self, ps: list[str]) -> bool:
         for e in self.elementos:
@@ -77,3 +78,23 @@ class Video(Contenido):
 class Usuario:
     def __init__(self, nombre):
         self.nombre = nombre
+
+class Preferencia(ABC):
+    @abstractmethod
+    def satisface(self, noticia: "Noticia") -> bool:
+        pass
+
+class PrefCategoria(Preferencia):
+    def __init__(self, categoria):
+        self.categoria = categoria
+
+    def satisface(self, noticia: "Noticia") -> bool:
+        return noticia.categoria == self.categoria
+
+
+class PalabraClave(Preferencia):
+    def __init__(self, palabra: str):
+        self.palabra = palabra
+
+    def satisface(self, noticia: "Noticia") -> bool:
+        return noticia.cuerpo.contiene_palabra(self.palabra)
