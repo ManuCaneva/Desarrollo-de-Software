@@ -32,7 +32,7 @@ Class Cuerpo:
                 return True
         return False
 
-    def contieneTodas(self, ps: List[str]) -> bool:
+    def contieneTodas(self, ps: list[str]) -> bool:
         for e in self.elementos:
             texto = e.textoExtraible()
             for p in ps:
@@ -45,10 +45,6 @@ Class Cuerpo:
         for e in self.elementos:
             palabras = len(e.textoExtraible().split())
         return palabras
-
-class Usuario:
-    def __init__(self, nombre):
-        self.nombre = nombre
 
 class Contenido(ABC):
     @abstractmethod
@@ -77,3 +73,7 @@ class Video(Contenido):
 
     def textoExtraible(self) -> str:
         return self.descripcion
+
+class Usuario:
+    def __init__(self, nombre):
+        self.nombre = nombre
