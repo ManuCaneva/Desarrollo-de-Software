@@ -89,11 +89,21 @@ class Usuario:
 class Suscripcion:
     total_subs = 0
 
-    def __init__(self, usuario, ):
-        pass
+    def __init__(self, usuarios, preferencias):
+        self.id = total_subs
+        self.usuarios = usuarios
+        self.preferencias = preferencias
+
+        self.__class__.incremental_id()
+
+    def aplicaANoticia(self, noticia: Noticia):
+        for pref in self.preferencias:
+            if pref.satisface(noticia):
+                return True
+        return False
 
     @classmethod
-    def incrementar_id(cls):
+    def incrementarId(cls):
         cls.total_subs += 1
 
 class Preferencia(ABC):
@@ -113,4 +123,4 @@ class PalabraClave(Preferencia):
         self.palabra = palabra
 
     def satisface(self, noticia: Noticia) -> bool:
-        return noticia.cuerpo.contiene_palabra(self.palabra)
+        return noticia.cuerpo.contienePalabra(self.palabra)
