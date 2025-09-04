@@ -211,10 +211,14 @@ class ServidorNoticias:
     def publicarNoticia(self, noticia: Noticia):
         self.noticias.append(noticia)
         print(f"\nNueva noticia publicada: {noticia.titulo}")
+        notificaciones_enviadas = False
         for s in self.suscripciones:
             if s.aplicaANoticia(noticia):
                 for u in s.usuarios:
-                    print(f"[{u.nombre}] recibió la noticia: {noticia.titulo}")
+                    print(f"[Notificación para {u.nombre}] La noticia \"{noticia.titulo}\" coincide con tu suscripción.")
+                    notificaciones_enviadas = True
+        if not notificaciones_enviadas:
+            print("Ningún usuario suscrito recibió esta noticia.")
 
 
 if __name__ == "__main__":
@@ -230,7 +234,7 @@ if __name__ == "__main__":
     for u in servidor.usuarios:
         print(f"ID: {u.id}, Nombre: {u.nombre}")
 
-    # 3. Definir filtros
+    # 3. Definir filtros (esta parte ya la tienes y es correcta)
     filtro_deportes = FiltroCategoria(Categoria.DEPORTES)
     filtro_chimentos = FiltroCategoria(Categoria.CHIMENTERO)
     filtro_de_paul = FiltroPalabraClave("De Paul")
@@ -240,65 +244,55 @@ if __name__ == "__main__":
     filtro_titulo_clima = FiltroTitulo("El Clima")
 
 
-    # 4. Crear suscripciones
-    # Suscripción de Juan: Noticias de Deportes Y que hablen de "De Paul"
+    # 4. Crear suscripciones y asociarlas (esta parte ya la tienes y es correcta)
     suscripcion_juan_depaul = Suscripcion(filtros=[YFiltro([filtro_deportes, filtro_de_paul])])
     user_juan.agregarSuscripcion(suscripcion_juan_depaul)
     servidor.agregarSuscripcion(suscripcion_juan_depaul)
 
-    # Suscripción de Maria: Noticias de "River" O "Boca" Y que no sean de Economía
     suscripcion_maria_futbol = Suscripcion(filtros=[YFiltro([OFiltro([filtro_river_boca, FiltroPalabraClave("fútbol")]), filtro_no_economia])])
     user_maria.agregarSuscripcion(suscripcion_maria_futbol)
     servidor.agregarSuscripcion(suscripcion_maria_futbol)
 
-    # Suscripción de Pedro: Noticias de cualquier categoría pero con menos de 50 palabras
     suscripcion_pedro_cortas = Suscripcion(filtros=[filtro_max_50_palabras])
     user_pedro.agregarSuscripcion(suscripcion_pedro_cortas)
     servidor.agregarSuscripcion(suscripcion_pedro_cortas)
     
-    # Suscripción de Juan (otra): Noticias de espectáculos O chimentero
     suscripcion_juan_farandula = Suscripcion(filtros=[OFiltro([FiltroCategoria(Categoria.ESPECTACULOS), FiltroCategoria(Categoria.CHIMENTERO)])])
     user_juan.agregarSuscripcion(suscripcion_juan_farandula)
     servidor.agregarSuscripcion(suscripcion_juan_farandula)
 
+    # ESTAS LÍNEAS DE IMPRESIÓN DEBEN ESTAR AQUÍ, Y SOLO AQUÍ:
     print("\n--- Suscripciones Creadas y Asociadas ---")
     print(f"Juan tiene {len(user_juan.suscripciones)} suscripciones.")
     print(f"Maria tiene {len(user_maria.suscripciones)} suscripciones.")
     print(f"Pedro tiene {len(user_pedro.suscripciones)} suscripciones.")
 
 
-    # 5. Publicar noticias y observar las notificaciones
-    # Noticia 1: Deporte con De Paul (Debería notificar a Juan)
+    # 5. Publicar noticias y observar las notificaciones (estas llamadas son correctas)
     cuerpo1 = Cuerpo([Texto("El jugador De Paul tuvo una destacada actuación en el partido de la selección de fútbol.")])
     noticia1 = Noticia(1, "Gran partido de la Selección", Categoria.DEPORTES, cuerpo1, "2025-09-01")
     servidor.publicarNoticia(noticia1)
 
-    # Noticia 2: Chimentos con De Paul (No debería notificar a Juan por la primera suscripción, pero sí por la segunda)
     cuerpo2 = Cuerpo([Texto("De Paul y su nueva pareja fueron vistos en un evento social, generando rumores.")])
     noticia2 = Noticia(2, "De Paul en el ojo de la tormenta", Categoria.CHIMENTERO, cuerpo2, "2025-09-02")
     servidor.publicarNoticia(noticia2)
 
-    # Noticia 3: Deporte sin De Paul (No debería notificar a Juan)
     cuerpo3 = Cuerpo([Texto("River y Boca empataron en un emocionante superclásico. El partido estuvo lleno de goles y polémica.")])
     noticia3 = Noticia(3, "Superclásico vibrante: River y Boca no se sacaron ventajas", Categoria.DEPORTES, cuerpo3, "2025-09-03")
-    servidor.publicarNoticia(noticia3) # Debería notificar a Maria
+    servidor.publicarNoticia(noticia3)
 
-    # Noticia 4: Economía (No debería notificar a Maria)
     cuerpo4 = Cuerpo([Texto("La bolsa de valores tuvo una jornada agitada, con subas y bajas inesperadas.")])
     noticia4 = Noticia(4, "Mercados en vilo por nueva política económica", Categoria.ECONOMIA, cuerpo4, "2025-09-04")
     servidor.publicarNoticia(noticia4)
 
-    # Noticia 5: Noticia corta (Debería notificar a Pedro)
     cuerpo5 = Cuerpo([Texto("Breve informe meteorológico. Se esperan lluvias fuertes para el fin de semana en la capital.")])
     noticia5 = Noticia(5, "Pronóstico del tiempo", Categoria.SOCIALES, cuerpo5, "2025-09-05")
     servidor.publicarNoticia(noticia5)
 
-    # Noticia 6: Espectáculos (Debería notificar a Juan por la segunda suscripción)
     cuerpo6 = Cuerpo([Texto("La nueva película de ciencia ficción rompe récords de taquilla en su primer fin de semana de estreno.")])
     noticia6 = Noticia(6, "Éxito rotundo en la taquilla", Categoria.ESPECTACULOS, cuerpo6, "2025-09-06")
     servidor.publicarNoticia(noticia6)
 
-    # Noticia 7: Noticia larga que nadie suscribe
     cuerpo7 = Cuerpo([Texto("Este es un artículo muy largo sobre la historia de la programación orientada a objetos, abarcando muchísimos detalles, ejemplos y conceptos avanzados. La extensión de este texto supera ampliamente las cincuenta palabras, haciendo que no sea apto para suscripciones que busquen contenido conciso. Exploramos la evolución desde Smalltalk hasta los paradigmas modernos de Python y Java, sus ventajas y desventajas en el desarrollo de software. Analizamos patrones de diseño comunes, principios SOLID y la importancia de la abstracción y el encapsulamiento para construir sistemas robustos y mantenibles.")])
     noticia7 = Noticia(7, "Un largo tratado de POO", Categoria.ECONOMIA, cuerpo7, "2025-09-07")
     servidor.publicarNoticia(noticia7)
