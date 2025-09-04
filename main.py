@@ -11,3 +11,7 @@ class Noticia:
     def conteoPalabras(self):
         #devuelve la cantidad de palabras en el cuerpo de la noticia
         return len(self.cuerpo.split())
+
+class Usuario:
+    def __init__(self, nombre):
+        self.nombre = nombre
