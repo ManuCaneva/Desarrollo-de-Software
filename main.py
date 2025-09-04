@@ -79,7 +79,7 @@ class Video(Contenido):
         return self.descripcion
 
 class Usuario:
-    id = 0
+    contador_id = 0
 
     def __init__(self, nombre):
         self.id = self.__class__.id
