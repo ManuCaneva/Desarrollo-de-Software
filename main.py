@@ -49,6 +49,10 @@ class Cuerpo:
 class Contenido(ABC):
     @abstractmethod
     def textoExtraible(self) -> str:
+        """
+        Método abstracto que obliga a las subclases a definir
+        cómo extraen el texto de sí mismas.
+        """
         pass
 
 class Texto(Contenido):
