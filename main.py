@@ -158,5 +158,5 @@ class YFiltro(Filtro):
 
 class ServidorNoticias:
     def __init__(self, noticias, suscripciones):
-        self.noticias = []
-        self.suscripciones = []
+        self.noticias
+        self.suscripciones
