@@ -19,7 +19,31 @@ class Noticia:
 
     def conteoPalabras(self):
         #devuelve la cantidad de palabras en el cuerpo de la noticia
-        return len(self.cuerpo.split())
+        return self.cuerpo.conteoPalabras()
+
+Class Cuerpo:
+    def __init__(self, elementos):
+        self.elementos = elementos
+    
+    def contienePalabra(self, p: str) -> bool:
+        for e in self.elementos:
+            if isinstance(e, str) and p in e:
+                return True
+        
+        return False
+
+    def contieneTodas(self, ps: List[str]) -> bool:
+        # hay que hacer j
+        return False
+    
+    def conteoPalabras(self) -> int:
+        palabras = 0
+
+        for e in self.elementos:
+            if isinstance(e, str):
+                palabras = len(e.split())
+        
+        return palabras
 
 class Usuario:
     def __init__(self, nombre):
