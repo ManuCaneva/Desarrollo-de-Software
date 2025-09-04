@@ -32,7 +32,6 @@ class Cuerpo:
                 return True
         return False
 
-
     def contieneTodas(self, ps: list[str]) -> bool:
         for e in self.elementos:
             texto = e.textoExtraible()
@@ -79,22 +78,30 @@ class Usuario:
     def __init__(self, nombre):
         self.nombre = nombre
 
+class Suscripcion:
+    total_subs = 0
+
+    def __init__(self, usuario, )
+
+    @class_method
+    def incrementar_id(cls):
+        cls.total_subs += 1
+
 class Preferencia(ABC):
     @abstractmethod
-    def satisface(self, noticia: "Noticia") -> bool:
+    def satisface(self, noticia: Noticia) -> bool:
         pass
 
 class PrefCategoria(Preferencia):
     def __init__(self, categoria):
         self.categoria = categoria
 
-    def satisface(self, noticia: "Noticia") -> bool:
+    def satisface(self, noticia: Noticia) -> bool:
         return noticia.categoria == self.categoria
-
 
 class PalabraClave(Preferencia):
     def __init__(self, palabra: str):
         self.palabra = palabra
 
-    def satisface(self, noticia: "Noticia") -> bool:
+    def satisface(self, noticia: Noticia) -> bool:
         return noticia.cuerpo.contiene_palabra(self.palabra)
