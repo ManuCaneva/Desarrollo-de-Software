@@ -1,3 +1,5 @@
+categorias = tuple("DEPORTES", "SOCIALES", "POLICIALES", "ESPECTACULOS", "ECONOMÍA", "INTERNACIONALES", "CHIMENTERO")
+
 class Noticia:
     def __init__(self, id, titulo, categoria, cuerpo, fechaPublicacion):
         self.id = id
