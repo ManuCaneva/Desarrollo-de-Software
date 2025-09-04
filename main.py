@@ -77,3 +77,23 @@ class Video(Contenido):
 
     def textoExtraible(self) -> str:
         return self.descripcion
+
+class Preferencia(ABC):
+    @abstractmethod
+    def satisface(self, noticia: "Noticia") -> bool:
+        pass
+
+class PrefCategoria(Preferencia):
+    def __init__(self, categoria):
+        self.categoria = categoria
+
+    def satisface(self, noticia: "Noticia") -> bool:
+        return noticia.categoria == self.categoria
+
+
+class PalabraClave(Preferencia):
+    def __init__(self, palabra: str):
+        self.palabra = palabra
+
+    def satisface(self, noticia: "Noticia") -> bool:
+        return noticia.cuerpo.contiene_palabra(self.palabra)
