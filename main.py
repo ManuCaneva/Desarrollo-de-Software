@@ -96,5 +96,5 @@ class PalabraClave(Preferencia):
     def __init__(self, palabra: str):
         self.palabra = palabra
 
-    def satisface(self, noticia: "Noticia") -> bool:
+    def satisface(self, noticia: Noticia) -> bool:
         return noticia.cuerpo.contiene_palabra(self.palabra)
