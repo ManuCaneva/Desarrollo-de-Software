@@ -32,6 +32,7 @@ class Cuerpo:
                 return True
         return False
 
+
     def contieneTodas(self, ps: list[str]) -> bool:
         for e in self.elementos:
             texto = e.textoExtraible()
@@ -45,10 +46,6 @@ class Cuerpo:
         for e in self.elementos:
             palabras = len(e.textoExtraible().split())
         return palabras
-
-class Usuario:
-    def __init__(self, nombre):
-        self.nombre = nombre
 
 class Contenido(ABC):
     @abstractmethod
@@ -82,16 +79,20 @@ class Video(Contenido):
     def textoExtraible(self) -> str:
         return self.descripcion
 
+class Usuario:
+    def __init__(self, nombre):
+        self.nombre = nombre
+
 class Preferencia(ABC):
     @abstractmethod
-    def satisface(self, noticia: "Noticia") -> bool:
+    def satisface(self, noticia: Noticia) -> bool:
         pass
 
 class PrefCategoria(Preferencia):
     def __init__(self, categoria):
         self.categoria = categoria
 
-    def satisface(self, noticia: "Noticia") -> bool:
+    def satisface(self, noticia: Noticia) -> bool:
         return noticia.categoria == self.categoria
 
 
@@ -99,5 +100,5 @@ class PalabraClave(Preferencia):
     def __init__(self, palabra: str):
         self.palabra = palabra
 
-    def satisface(self, noticia: "Noticia") -> bool:
+    def satisface(self, noticia: Noticia) -> bool:
         return noticia.cuerpo.contiene_palabra(self.palabra)
