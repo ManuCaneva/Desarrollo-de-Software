@@ -32,7 +32,6 @@ class Cuerpo:
                 return True
         return False
 
-
     def contieneTodas(self, ps: list[str]) -> bool:
         for e in self.elementos:
             texto = e.textoExtraible()
@@ -50,6 +49,10 @@ class Cuerpo:
 class Contenido(ABC):
     @abstractmethod
     def textoExtraible(self) -> str:
+        """
+        Método abstracto que obliga a las subclases a definir
+        cómo extraen el texto de sí mismas.
+        """
         pass
 
 class Texto(Contenido):
@@ -82,6 +85,16 @@ class Usuario:
         self.subscripciones = []
         
 
+class Suscripcion:
+    total_subs = 0
+
+    def __init__(self, usuario, ):
+        pass
+
+    @class_method
+    def incrementar_id(cls):
+        cls.total_subs += 1
+
 class Preferencia(ABC):
     @abstractmethod
     def satisface(self, noticia: Noticia) -> bool:
@@ -93,7 +106,6 @@ class PrefCategoria(Preferencia):
 
     def satisface(self, noticia: Noticia) -> bool:
         return noticia.categoria == self.categoria
-
 
 class PalabraClave(Preferencia):
     def __init__(self, palabra: str):
