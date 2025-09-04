@@ -84,7 +84,8 @@ class Usuario:
         self.nombre = nombre
         self.suscripciones = []
         
-
+    def agregarSuscripcion(self, suscripcion):
+        self.suscripciones.append(suscripcion)
 
 class Suscripcion:
     total_subs = 0
