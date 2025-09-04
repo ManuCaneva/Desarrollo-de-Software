@@ -28,22 +28,22 @@ Class Cuerpo:
     
     def contienePalabra(self, p: str) -> bool:
         for e in self.elementos:
-            if isinstance(e, str) and p in e:
+            if p in e.textoExtraible():
                 return True
-        
         return False
 
     def contieneTodas(self, ps: List[str]) -> bool:
-        # hay que hacer j
-        return False
+        for e in self.elementos:
+            texto = e.textoExtraible()
+            for p in ps:
+                if p in texto:
+                    ps.remove(p)
+        return not ps
     
     def conteoPalabras(self) -> int:
         palabras = 0
-
         for e in self.elementos:
-            if isinstance(e, str):
-                palabras = len(e.split())
-        
+            palabras = len(e.textoExtraible().split())
         return palabras
 
 class Usuario:
@@ -52,29 +52,28 @@ class Usuario:
 
 class Contenido(ABC):
     @abstractmethod
-    def texto_extraible(self) -> str:
+    def textoExtraible(self) -> str:
         pass
+
 class Texto(Contenido):
     def __init__(self, contenido: str):
         self.contenido = contenido
 
-    def texto_extraible(self) -> str:
+    def textoExtraible(self) -> str:
         return self.contenido
-
 
 class Imagen(Contenido):
     def __init__(self, descripcion: str):
         self.descripcion = descripcion
 
-    def texto_extraible(self) -> str:
+    def textoExtraible(self) -> str:
         # simplificamos: devolvemos descripción como "texto extraíble"
         return self.descripcion
-
 
 class Video(Contenido):
     def __init__(self, url: str, descripcion: str = ""):
         self.url = url
         self.descripcion = descripcion
 
-    def texto_extraible(self) -> str:
+    def textoExtraible(self) -> str:
         return self.descripcion
