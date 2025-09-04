@@ -82,8 +82,9 @@ class Usuario:
     def __init__(self, id, nombre):
         self.id = id
         self.nombre = nombre
-        self.subscripciones = []
+        self.suscripciones = []
         
+
 
 class Suscripcion:
     total_subs = 0
