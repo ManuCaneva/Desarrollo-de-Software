@@ -88,24 +88,15 @@ class Usuario:
         self.suscripciones.append(Suscripcion)
 
 class Suscripcion:
-    total_subs = 0
-
-    def __init__(self, usuarios, filtros, total_subs):
-        self.id = total_subs
+    def __init__(self, usuarios, filtros):
         self.usuarios = usuarios
         self.filtros = filtros
-
-        self.__class__.incremental_id()
 
     def aplicaANoticia(self, noticia: Noticia):
         for filtro in self.filtros:
             if filtro.satisfechoPor(noticia):
                 return True
         return False
-
-    @classmethod
-    def incrementarId(cls):
-        cls.total_subs += 1
 
 class Filtro(ABC):
     @abstractmethod
