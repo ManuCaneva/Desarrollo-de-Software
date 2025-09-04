@@ -5,11 +5,10 @@ class Noticia:
         self.categoria = categoria
         self.cuerpo = cuerpo
         self.fechaPublicación = fechaPublicacion
-        pass
 
     def conteoPalabras(self):
-        #cuenta algo qsy
-        return None
+        #devuelve la cantidad de palabras en el cuerpo de la noticia
+        return len(self.cuerpo.split())
 
 class Usuario:
     def __init__(self, nombre):
