@@ -88,7 +88,7 @@ class Suscripcion:
     def __init__(self, usuario, ):
         pass
 
-    @class_method
+    @classmethod
     def incrementar_id(cls):
         cls.total_subs += 1
 
