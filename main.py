@@ -81,14 +81,14 @@ class Usuario:
 
 class Preferencia(ABC):
     @abstractmethod
-    def satisface(self, noticia: "Noticia") -> bool:
+    def satisface(self, noticia: Noticia) -> bool:
         pass
 
 class PrefCategoria(Preferencia):
     def __init__(self, categoria):
         self.categoria = categoria
 
-    def satisface(self, noticia: "Noticia") -> bool:
+    def satisface(self, noticia: Noticia) -> bool:
         return noticia.categoria == self.categoria
 
 
