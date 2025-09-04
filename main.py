@@ -156,8 +156,22 @@ class YFiltro(Filtro):
     def satisfechoPor(self, noticia: Noticia) -> bool:
         return all(p.satisfechoPor(noticia) for p in self.filtros)
 
-class ServidorNoticias:
-    def __init__(self):
-        self.noticias = []
-        self.suscripciones = []
+class OFiltro(Filtro):
+    def __init__(self, filtros: list[Filtro]):
+        self.filtros = filtros
 
+    def satisfechoPor(self, noticia: Noticia) -> bool:
+        return any(p.satisfechoPor(noticia) for p in self.filtros)
+
+class NoFiltro(Filtro):
+    def __init__(self, filtro: Filtro):
+        self.filtros = filtro
+
+    def satisfechoPor(self, noticia: Noticia) -> bool:
+        return not p.satisfechoPor(noticia)
+
+class ServidorNoticias:
+    def __init__(self, usuarios, noticias, suscripciones):
+        self.usuarios = usuarios
+        self.noticias = noticias
+        self.suscripciones = suscripciones
