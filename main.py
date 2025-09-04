@@ -146,3 +146,12 @@ class PrefMaxPalabras(Preferencia):
 
     def satisface(self, noticia: Noticia) -> bool:
         return noticia.conteoPalabras() <= self.max_palabras
+    
+class YPreferencia(Preferencia):
+    #se le pasa una lista de Preferencias
+    def __init__(self, preferencias: list[Preferencia]):
+        self.preferencias = preferencias
+
+    #el all() devuelve true si todos los valores son true
+    def satisface(self, noticia: Noticia) -> bool:
+        return all(p.satisface(noticia) for p in self.preferencias)
