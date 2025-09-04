@@ -88,7 +88,7 @@ class Suscripcion:
     def __init__(self, usuario, ):
         pass
 
-    @class_method
+    @classmethod
     def incrementar_id(cls):
         cls.total_subs += 1
 
@@ -103,6 +103,13 @@ class PrefCategoria(Preferencia):
 
     def satisface(self, noticia: Noticia) -> bool:
         return noticia.categoria == self.categoria
+
+class PrefTitulo(Preferencia):
+    def __init__(self, frase: str):
+        self.frase = frase
+
+    def satisface(self, noticia: Noticia) -> bool:
+        return self.frase == noticia.titulo
 
 class PalabraClave(Preferencia):
     def __init__(self, palabra: str):
