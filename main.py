@@ -89,7 +89,7 @@ class Usuario:
 class Suscripcion:
     total_subs = 0
 
-    def __init__(self, usuarios, preferencias):
+    def __init__(self, usuarios, preferencias, total_subs):
         self.id = total_subs
         self.usuarios = usuarios
         self.preferencias = preferencias
