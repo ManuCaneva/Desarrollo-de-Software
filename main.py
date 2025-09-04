@@ -1,3 +1,4 @@
+import this
 """
 jijiji ja
 """
