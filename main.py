@@ -157,6 +157,6 @@ class YFiltro(Filtro):
         return all(p.satisfechoPor(noticia) for p in self.filtros)
 
 class ServidorNoticias:
-    def __init__(self):
+    def __init__(self, noticias, suscripciones):
         self.noticias = []
         self.suscripciones = []
