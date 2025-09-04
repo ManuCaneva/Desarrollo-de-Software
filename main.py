@@ -22,7 +22,7 @@ class Noticia:
         #devuelve la cantidad de palabras en el cuerpo de la noticia
         return self.cuerpo.conteoPalabras()
 
-Class Cuerpo:
+class Cuerpo:
     def __init__(self, elementos):
         self.elementos = elementos
     
@@ -32,7 +32,7 @@ Class Cuerpo:
                 return True
         return False
 
-    def contieneTodas(self, ps: List[str]) -> bool:
+    def contieneTodas(self, ps: list[str]) -> bool:
         for e in self.elementos:
             texto = e.textoExtraible()
             for p in ps:
