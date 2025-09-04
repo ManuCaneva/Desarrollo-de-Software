@@ -115,9 +115,16 @@ class PrefTitulo(Preferencia):
     def satisface(self, noticia: Noticia) -> bool:
         return self.frase == noticia.titulo
 
-class PalabraClave(Preferencia):
+class PrefPalabraClave(Preferencia):
     def __init__(self, palabra: str):
         self.palabra = palabra
 
     def satisface(self, noticia: Noticia) -> bool:
-        return noticia.cuerpo.contiene_palabra(self.palabra)
+        return noticia.cuerpo.contienePalabra(self.palabra)
+    
+class PrefContieneTodas(Preferencia):
+    def __init__(self, palabras: list[str]):
+        self.palabras = palabras
+
+    def satisface(self, noticia: Noticia) -> bool:
+        return noticia.cuerpo.contieneTodas(self.palabras)
