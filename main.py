@@ -89,15 +89,15 @@ class Usuario:
 class Suscripcion:
     total_subs = 0
 
-    def __init__(self, usuarios, preferencias, total_subs):
+    def __init__(self, usuarios, filtros, total_subs):
         self.id = total_subs
         self.usuarios = usuarios
-        self.preferencias = preferencias
+        self.filtros = filtros
 
         self.__class__.incremental_id()
 
     def aplicaANoticia(self, noticia: Noticia):
-        for pref in self.preferencias:
+        for pref in self.filtros:
             if pref.satisface(noticia):
                 return True
         return False
@@ -106,51 +106,51 @@ class Suscripcion:
     def incrementarId(cls):
         cls.total_subs += 1
 
-class Preferencia(ABC):
+class Filtro(ABC):
     @abstractmethod
     def satisface(self, noticia: Noticia) -> bool:
         pass
 
-class PrefCategoria(Preferencia):
+class FiltroCategoria(Filtro):
     def __init__(self, categoria):
         self.categoria = categoria
 
     def satisface(self, noticia: Noticia) -> bool:
         return noticia.categoria == self.categoria
 
-class PrefTitulo(Preferencia):
+class FiltroTitulo(Filtro):
     def __init__(self, frase: str):
         self.frase = frase
 
     def satisface(self, noticia: Noticia) -> bool:
         return self.frase == noticia.titulo
 
-class PrefPalabraClave(Preferencia):
+class FiltroPalabraClave(Filtro):
     def __init__(self, palabra: str):
         self.palabra = palabra
 
     def satisface(self, noticia: Noticia) -> bool:
         return noticia.cuerpo.contienePalabra(self.palabra)
     
-class PrefContieneTodas(Preferencia):
+class FiltroContieneTodas(Filtro):
     def __init__(self, palabras: list[str]):
         self.palabras = palabras
 
     def satisface(self, noticia: Noticia) -> bool:
         return noticia.cuerpo.contieneTodas(self.palabras)
     
-class PrefMaxPalabras(Preferencia):
+class FiltroMaxPalabras(Filtro):
     def __init__(self, max_palabras: int):
         self.max_palabras = max_palabras
 
     def satisface(self, noticia: Noticia) -> bool:
         return noticia.conteoPalabras() <= self.max_palabras
     
-class YPreferencia(Preferencia):
-    #se le pasa una lista de Preferencias
-    def __init__(self, preferencias: list[Preferencia]):
-        self.preferencias = preferencias
+class YFiltro(Filtro):
+    #se le pasa una lista de Filtros
+    def __init__(self, filtros: list[Filtro]):
+        self.filtros = filtros
 
     #el all() devuelve true si todos los valores son true
     def satisface(self, noticia: Noticia) -> bool:
-        return all(p.satisface(noticia) for p in self.preferencias)
+        return all(p.satisface(noticia) for p in self.filtros)
